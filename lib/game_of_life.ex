@@ -9,10 +9,24 @@ defmodule GameOfLife do
   end
 
   def play(alive_cells, dead_cells) do
-    # keep_alive?(tl(alive_cells)), hd(alive_cells))
+    play(alive_cells, alive_cells, [], &GameOfLife.keep_alive?/2)
+    ++
+    play(dead_cells, alive_cells, [], &GameOfLife.become_alive?/2)
   end
 
-  defp count_neighbours([head|tail], x, y, count) do
+  defp play([head | tail],alive_cells,l, f) do
+    if f.(alive_cells, head) do
+      play(tail, alive_cells, l ++ [head], f)
+    else
+      play(tail, alive_cells , l, f)
+    end
+  end
+
+  defp play([],_, l, _) do
+    l
+  end
+
+  defp count_neighbours([head | tail], x, y, count) do
     increment = case head do
       {hx, hy} when hx == x - 1 and hy == y - 1 -> 1
       {hx, hy} when hx == x     and hy == y - 1 -> 1
@@ -20,11 +34,13 @@ defmodule GameOfLife do
       {hx, hy} when hx == x + 1 and hy == y + 1 -> 1
       {hx, hy} when hx == x     and hy == y + 1 -> 1
       {hx, hy} when hx == x + 1 and hy == y -> 1
+      {hx, hy} when hx == x - 1 and hy == y + 1-> 1
+      {hx, hy} when hx == x + 1 and hy == y - 1-> 1
       _foo -> 0
     end
     count_neighbours(tail, x, y, count + increment)
   end
-  defp count_neighbours([], x, y, count) do
+  defp count_neighbours([], _, _, count) do
     count
   end
 end

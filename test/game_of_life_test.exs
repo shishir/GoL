@@ -34,9 +34,8 @@ defmodule GameOfLifeTest do
 
   test "next generation" do
     alive_cells = [{1,1}, {0,1}, {1,0}]
-    dead_cells = [{0,0}]
-    {alive_cells, dead_cells} = GameOfLife.play(alive_cells, dead_cells)
-    assert alive_cells == [{1,1}, {0,1}, {1,0}, {1,1}]
-    assert dead_cells == []
+    dead_cells  = [{0,0}]
+    alive_cells = GameOfLife.play(alive_cells, dead_cells)
+    assert alive_cells == [{1,1}, {0,1}, {1,0}, {0,0}]
   end
 end
